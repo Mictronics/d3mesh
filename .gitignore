@@ -136,3 +136,4 @@ dmypy.json
 # IDE
 .idea/
 .DS_Store
+*.code-workspace
