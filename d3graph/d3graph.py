@@ -8,6 +8,7 @@
 import logging
 import os
 import time
+import datetime
 import webbrowser
 from json import dumps
 from pathlib import Path
@@ -105,6 +106,8 @@ class d3graph:
              click={'fill': None, 'stroke': 'black', 'size': 1.3, 'stroke-width': 3},
              notebook: bool = False,
              save_button: bool = True,
+             node_count: int = 0,
+             link_count: int = 0,
              ) -> None:
         """Build and show the graph.
 
@@ -138,6 +141,10 @@ class d3graph:
         save_button : bool, (default: True)
             True: Save button is shown in the HTML to save the image in svg.
             False: No save button is shown in the HTML.
+        node_count : int, (default: 0)
+            Number of known nodes.
+        link_count : int, (default: 0)
+            Number of known links between nodes.
 
         Returns
         -------
@@ -157,6 +164,8 @@ class d3graph:
         self.config['notebook'] = notebook
         self.config['click'] = click
         self.config['save_button'] = save_button
+        self.config['node_count'] = node_count
+        self.config['link_count'] = link_count
         # self.config['filepath'] = self.set_path(filepath)
         if self.config.get('filepath', None)!='d3graph.html': self.config['filepath'] = self.set_path(filepath)
 
@@ -705,6 +714,8 @@ class d3graph:
         # Set width and height to screen resolution if None.
         width = 'window.screen.width' if self.config['figsize'][0] is None else self.config['figsize'][0]
         height = 'window.screen.height' if self.config['figsize'][1] is None else self.config['figsize'][1]
+        dt = datetime.datetime.now()
+        update = dt.strftime('%d.%m.%Y %H:%M')
 
         content = {'json_data': json_data,
                    'title': self.config['network_title'],
@@ -727,6 +738,9 @@ class d3graph:
                    'save_button_comment_stop': show_save_button[1],
                    'SET_SLIDER': self.config['set_slider'],
                    'SUPPORT': self.config['support'],
+                   'last_update': update,
+                   'node_count': self.config['node_count'],
+                   'link_count': self.config['link_count']
                    }
 
         try:

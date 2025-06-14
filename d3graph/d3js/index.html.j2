@@ -2,17 +2,21 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>{{ title }}</title>
-
-    {{ SUPPORT }}
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Meshtastic Network">
+    <meta name="keywords" content="meshtastic, nodes, mesh, network, netzwerk, knoten" />
+    <meta name="robots" content="index, follow, archive">
     <style type="text/css">
         {% include "style.css" %}
     </style>
 </head>
 <body>
-
+    <div>The Meshtastic Network</div>
+    <div>Last update: {{ last_update }}</div>
+    <div>Nodes: {{ node_count }}</div>
+    <div>Links: {{ link_count }}</div>
 <!-- Create save button -->
 {{ save_button_comment_start }}
     <div style="max-width:{{ width }}px;">
