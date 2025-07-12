@@ -70,7 +70,8 @@ class d3graph:
                  support: str = 'text',
                  verbose: int = 20) -> None:
         """Initialize d3graph."""
-        if slider is None: slider = [None, None]
+        if slider is None:
+            slider = [None, None]
         # Cleaning
         self._clean()
         # Some library compatibility checks
@@ -93,7 +94,8 @@ class d3graph:
         """Clean previous results to ensure correct working."""
         for attr in ('adjmat', 'edge_properties', 'G', 'node_properties'):
             self.__dict__.pop(attr, None)
-        if clean_config and hasattr(self, 'config'): del self.config
+        if clean_config and hasattr(self, 'config'):
+            del self.config
 
     def show(self,
              figsize=[1500, 800],
@@ -167,7 +169,8 @@ class d3graph:
         self.config['node_count'] = node_count
         self.config['link_count'] = link_count
         # self.config['filepath'] = self.set_path(filepath)
-        if self.config.get('filepath', None)!='d3graph.html': self.config['filepath'] = self.set_path(filepath)
+        if self.config.get('filepath', None)!='d3graph.html':
+            self.config['filepath'] = self.set_path(filepath)
 
         # Create dataframe from co-occurrence matrix
         self.G = make_graph(self.node_properties, self.edge_properties)
@@ -416,7 +419,8 @@ class d3graph:
                 'edge_color': edge_color of the node
 
         """
-        if minmax is None: minmax = [8, 13]
+        if minmax is None:
+            minmax = [8, 13]
         node_names = self.adjmat.columns.astype(str)
         nodecount = self.adjmat.shape[0]
         group = np.zeros_like(node_names).astype(int)
@@ -437,7 +441,8 @@ class d3graph:
             label = self.adjmat.columns.astype(str)
         else:
             label = np.array([''] * nodecount)
-        if len(label) != nodecount: raise ValueError("[label] must be of same length as the number of nodes")
+        if len(label) != nodecount:
+            raise ValueError("[label] must be of same length as the number of nodes")
 
         # ############ tooltip text #############
         if isinstance(tooltip, list):
@@ -450,7 +455,8 @@ class d3graph:
             tooltip = label
         else:
             tooltip = np.array([''] * nodecount)
-        if len(tooltip) != nodecount: raise ValueError("[tooltip text] must be of same length as the number of nodes")
+        if len(tooltip) != nodecount:
+            raise ValueError("[tooltip text] must be of same length as the number of nodes")
 
         # ############ Set node color #############
         if isinstance(color, list) and len(color) == nodecount:
@@ -471,7 +477,8 @@ class d3graph:
                 color = np.array(['#000080'] * nodecount)
         else:
             assert 'Node color not possible'
-        if len(color) != nodecount: raise ValueError("[color] must be of same length as the number of nodes")
+        if len(color) != nodecount:
+            raise ValueError("[color] must be of same length as the number of nodes")
 
         # ############ Set opacity #############
         opacity = _set_opacity(self, opacity, nodecount, node_names)
@@ -504,7 +511,8 @@ class d3graph:
         # Check correctness of hex colors
         edge_color = _get_hexcolor(edge_color, cmap=self.config['cmap'])
         # Check length edge color with node count. This should match.
-        if len(edge_color) != nodecount: raise ValueError("[edge_color] must be of same length as the number of nodes")
+        if len(edge_color) != nodecount:
+            raise ValueError("[edge_color] must be of same length as the number of nodes")
 
         # ############ Set node size #############
         size = _set_node_size(self, size, minmax, nodecount)
@@ -527,7 +535,8 @@ class d3graph:
 
         # ############ Scale the edge-sizes #############
         edge_size = _normalize_size(edge_size.reshape(-1, 1), 0.5, 4, scaler=self.config['node_scaler'])
-        if len(edge_size) != nodecount: raise ValueError("[edge_size] must be of same length as the number of nodes")
+        if len(edge_size) != nodecount:
+            raise ValueError("[edge_size] must be of same length as the number of nodes")
 
         # ############ Store in dict #############
         self.node_properties = {}
@@ -563,9 +572,12 @@ class d3graph:
         dict group.
 
         """
-        if node_names is None: node_names = [*self.node_properties.keys()]
-        if not isinstance(color, str): color = '#808080'
-        if color=='cluster': color = '#808080'
+        if node_names is None:
+            node_names = [*self.node_properties.keys()]
+        if not isinstance(color, str):
+            color = '#808080'
+        if color=='cluster':
+            color = '#808080'
         # Set defaults
         labx = {key: {'name': key, 'color': color, 'group': '-1'} for i, key in node_names}
 
@@ -706,7 +718,8 @@ class d3graph:
         # Set quotes surrounding the color name
         if click_properties['fill'] != "function(d) {return d.node_color;}":
             click_properties['fill'] = '"' + click_properties['fill'] + '"'
-        if self.config['edge_distance'] is None: self.config['edge_distance']=50
+        if self.config['edge_distance'] is None:
+            self.config['edge_distance']=50
 
         # Hide slider
         show_slider = ['', ''] if self.config['show_slider'] else ['<!--', '-->']
@@ -755,7 +768,8 @@ class d3graph:
         if overwrite and index_file:
             logger.info(f'Write to path: [{index_file.absolute()}]')
             logger.info(f'File already exists and will be overwritten: [{index_file}]')
-            if os.path.isfile(index_file): os.remove(index_file)
+            if os.path.isfile(index_file):
+                os.remove(index_file)
             with open(index_file, 'w', encoding='utf-8') as f:
                 f.write(html)
 
@@ -904,7 +918,8 @@ def set_logger(verbose: [str, int] = 'info'):
 def convert_verbose_to_new(verbose):
     """Convert old verbosity to the new."""
     # In case the new verbosity is used, convert to the old one.
-    if verbose is None: verbose=0
+    if verbose is None:
+        verbose=0
     if not isinstance(verbose, str) and verbose<10:
         status_map = {
             'None': 'silent',
@@ -915,7 +930,8 @@ def convert_verbose_to_new(verbose):
             3: 'info',
             4: 'debug',
             5: 'debug'}
-        if verbose>=2: print('[XXX] WARNING use the standardized verbose status. The status [1-6] will be deprecated in future versions.')
+        if verbose>=2:
+            print('[XXX] WARNING use the standardized verbose status. The status [1-6] will be deprecated in future versions.')
         return status_map.get(verbose, 0)
     else:
         return verbose
@@ -976,7 +992,7 @@ def json_create(G: nx.Graph) -> str:
     # Set node properties
     nodes = pd.DataFrame([*G.nodes.values()]).T.to_dict()
     nodes_new = [None] * len(nodes)
-    for i, node in enumerate(nodes):
+    for i in enumerate(nodes):
         nodes[i]['node_name'] = nodes[i].pop('label')
         nodes[i]['node_marker'] = nodes[i].pop('marker')
         # nodes[i]['node_label'] = nodes[i].pop('label')
@@ -1114,9 +1130,12 @@ def adjmat2dict(adjmat: pd.DataFrame,
         df['weight_scaled'] = df['weight']
 
     # Set marker start-end
-    if edge_style is None: edge_style=0
-    if marker_start is None: marker_start=''
-    if marker_end is None: marker_end=''
+    if edge_style is None:
+        edge_style=0
+    if marker_start is None:
+        marker_start=''
+    if marker_end is None:
+        marker_end=''
     if label is None:
         label = ''
     elif label == 'weight':
@@ -1181,7 +1200,8 @@ def create_unique_dataframe(X, logger=None):
     if isinstance(X, pd.DataFrame):
         Iloc = ismember(X.columns, ['source', 'target', 'weight'])[0]
         X = X.loc[:, Iloc]
-        if 'weight' in X.columns: X['weight'] = X['weight'].astype(float)
+        if 'weight' in X.columns:
+            X['weight'] = X['weight'].astype(float)
         # Groupby values and sum the weights
         X = X.groupby(by=['source', 'target']).sum()
         X.reset_index(drop=False, inplace=True)
@@ -1297,8 +1317,10 @@ def _normalize_size(getsizes, minscale=0.5, maxscale=4, scaler: str = 'zscore'):
         pass
     elif scaler == 'zscore' and len(np.unique(getsizes)) >= 2:
         getsizes = (getsizes.flatten() - np.mean(getsizes)) / np.std(getsizes)
-        if minscale is not None: getsizes = getsizes + (minscale - np.min(getsizes))
-        if maxscale is not None: getsizes = np.minimum(getsizes, maxscale)
+        if minscale is not None:
+            getsizes = getsizes + (minscale - np.min(getsizes))
+        if maxscale is not None:
+            getsizes = np.minimum(getsizes, maxscale)
     elif scaler == 'minmax':
         try:
             from sklearn.preprocessing import MinMaxScaler
@@ -1428,8 +1450,10 @@ def vec2adjmat(source, target, weight=None, symmetric: bool = True, aggfunc='sum
     >>> vec2adjmat(source, target, weight=weight)
 
     """
-    if len(source) != len(target): raise ValueError('[d3graph] >Source and Target should have equal elements.')
-    if weight is None: weight = [1] * len(source)
+    if len(source) != len(target):
+        raise ValueError('[d3graph] >Source and Target should have equal elements.')
+    if weight is None:
+        weight = [1] * len(source)
     logger.info('Converting source-target into adjacency matrix..')
 
     df = pd.DataFrame(np.c_[source, target], columns=['source', 'target'])
@@ -1523,18 +1547,22 @@ def adjmat2vec(adjmat, min_weight: float = 1.0) -> pd.DataFrame:
 
 
 def _check_hex_color(color, n=None):
-    if isinstance(color, str) and len(color) != 7: raise ValueError(
+    if isinstance(color, str) and len(color) != 7:
+        raise ValueError(
         'Input parameter [color] has wrong format. Must be like color="#000000"')
-    if isinstance(color, list) and len(color) == 0: raise ValueError(
+    if isinstance(color, list) and len(color) == 0:
+        raise ValueError(
         'Input parameter [color] has wrong format and length. Must be like: color=["#000000", "...", "#000000"]')
-    if isinstance(color, list) and (not np.all(list(map(lambda x: len(x) == 7, color)))): raise ValueError(
+    if isinstance(color, list) and (not np.all(list(map(lambda x: len(x) == 7, color)))):
+        raise ValueError(
         '[color] contains incorrect length of hex-color! Hex must be of length 7: ["#000000", "#000000", etc]')
     if (n is not None) and isinstance(color, list) and len(color) != n:
         raise ValueError(f'Input parameter [color] has wrong length. Must be of length: {str(n)}')
 
 
 def _set_opacity(self, opacity, nodecount, node_names):
-    if isinstance(opacity, float): opacity = [opacity]
+    if isinstance(opacity, float):
+        opacity = [opacity]
 
     if isinstance(opacity, list) and len(opacity) == nodecount:
         opacity = np.array(opacity)
@@ -1555,7 +1583,8 @@ def _set_opacity(self, opacity, nodecount, node_names):
     else:
         opacity = np.array([0.99] * nodecount)
 
-    if len(opacity) != nodecount: raise ValueError("[opacity] must be of same length as the number of nodes")
+    if len(opacity) != nodecount:
+        raise ValueError("[opacity] must be of same length as the number of nodes")
 
     # Return
     return opacity
@@ -1584,7 +1613,8 @@ def _set_marker(self, marker, nodecount):
         marker = np.repeat(marker, nodecount)
 
     # Make check
-    if len(marker) != nodecount: raise ValueError("Node size must be of same length as the number of nodes")
+    if len(marker) != nodecount:
+        raise ValueError("Node size must be of same length as the number of nodes")
     # Return
     return marker
 
@@ -1607,7 +1637,8 @@ def _set_node_size(self, size, minmax, nodecount):
     # Scale the sizes
     size = _normalize_size(size.reshape(-1, 1), minmax[0], minmax[1], scaler=node_scaler)
     # size = _normalize_size(size.reshape(-1, 1), minmax[0], minmax[1], scaler='minmax')
-    if len(size) != nodecount: raise ValueError("Node size must be of same length as the number of nodes")
+    if len(size) != nodecount:
+        raise ValueError("Node size must be of same length as the number of nodes")
     # Return
     return size
 
@@ -1650,7 +1681,8 @@ def _set_node_fontcolor(self, fontcolor, color, node_names, nodecount):
             fontcolor = np.array(['#000080'] * nodecount)
     else:
         assert 'fontcolor not possible'
-    if len(fontcolor) != nodecount: raise ValueError("[fontcolor] must be of same length as the number of nodes")
+    if len(fontcolor) != nodecount:
+        raise ValueError("[fontcolor] must be of same length as the number of nodes")
     # return
     return fontcolor
 
@@ -1658,8 +1690,10 @@ def _set_node_fontcolor(self, fontcolor, color, node_names, nodecount):
 def get_support(support):
     """Support."""
     script=''
-    if isinstance(support, bool) and (not support): support = None
-    if isinstance(support, bool) and support: support = 'text'
+    if isinstance(support, bool) and (not support):
+        support = None
+    if isinstance(support, bool) and support:
+        support = 'text'
     if support is not None:
         script="<script async src='https://media.ethicalads.io/media/client/ethicalads.min.js'></script>"
         script = script + '\n' + "<div data-ea-publisher='erdogantgithubio' data-ea-type='{TYPE}' data-ea-style='stickybox'></div>".replace('{TYPE}', support)
