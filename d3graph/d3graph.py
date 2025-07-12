@@ -115,6 +115,25 @@ class d3graph:
              save_button: bool = True,
              node_count: int = 0,
              link_count: int = 0,
+             statistics = {
+                 'device': 0,
+                 'environment': 0,
+                 'power': 0,
+                 'traceroute': 0,
+                 'routing': 0,
+                 'position': 0,
+                 'nodinfo': 0,
+                 'text': 0,
+                 'error7': 0,
+                 'device_percent': 0,
+                 'environment_percent': 0,
+                 'power_percent': 0,
+                 'traceroute_percent': 0,
+                 'routing_percent': 0,
+                 'position_percent': 0,
+                 'nodinfo_percent': 0,
+                 'text_percent': 0,
+                },
              ) -> None:
         """Build and show the graph.
 
@@ -159,7 +178,8 @@ class d3graph:
             Number of known nodes.
         link_count : int, (default: 0)
             Number of known links between nodes.
-
+        statistics : {}, (default: 0)
+            Statistics about mesh traffic.
         Returns
         -------
         html.
@@ -180,6 +200,7 @@ class d3graph:
         self.config['save_button'] = save_button
         self.config['node_count'] = node_count
         self.config['link_count'] = link_count
+        self.config['statistics'] = statistics
         self.config['background_color'] = background_color
         self.config['dark_mode'] = dark_mode
         # if self.config.get('filepath', None) != 'd3graph.html':
@@ -769,6 +790,7 @@ class d3graph:
                    'last_update': update,
                    'node_count': self.config['node_count'],
                    'link_count': self.config['link_count'],
+                   'statistics': self.config['statistics'],
                    'background_color': self.config['background_color'],
                    'dark_mode': self.config['dark_mode'],
                    }

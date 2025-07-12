@@ -5,7 +5,7 @@
     <title>{{ title }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The Meshtastic Network">
+    <meta name="description" content="Bayern Mesh - Das Meshtastic Netzwerk in Bayern, empfangen in Donauwörth">
     <meta name="keywords" content="meshtastic, nodes, mesh, network, netzwerk, knoten" />
     <meta name="robots" content="index, follow, archive">
     <style type="text/css">
@@ -101,14 +101,79 @@
     </style>
 </head>
 <body>
-    <div>The Meshtastic Network</div>
-    <div>Last update: {{ last_update }}</div>
-    <div>Nodes: {{ node_count }}</div>
-    <div>Links: {{ link_count }}</div>
+    <div>Bayern Mesh - Das Meshtastic Netzwerk in Bayern, empfangen in Donauwörth.</div>
+    <div>Letzte Aktualisierung: {{ last_update }}</div>
+    <div>
+        <table><tbody>
+        <tr>
+            <td>Aktive Knoten in 24h</td>
+            <td></td>
+            <td>{{ node_count }}</td>
+        </tr>
+        <tr>
+            <td>Aktive Verbindungen in 24h</td>
+            <td></td>
+            <td>{{ link_count }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Nachrichten pro Stunde</td>
+        </tr>
+        <tr>
+            <td>Gerät</td>
+            <td>{{ statistics.device }}/h</td>
+            <td>{{ statistics.device_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Umwelt</td>
+            <td>{{ statistics.environment }}/h</td>
+            <td>{{ statistics.environment_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Energie</td>
+            <td>{{ statistics.power }}/h</td>
+            <td>{{ statistics.power_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Traceroute</td>
+            <td>{{ statistics.traceroute }}/h</td>
+            <td>{{ statistics.traceroute_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Weiterleitung</td>
+            <td>{{ statistics.routing }}/h</td>
+            <td>{{ statistics.routing_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Standort</td>
+            <td>{{ statistics.position }}/h</td>
+            <td>{{ statistics.position_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Knoteninfo</td>
+            <td>{{ statistics.nodeinfo }}/h</td>
+            <td>{{ statistics.nodeinfo_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Text</td>
+            <td>{{ statistics.text }}/h</td>
+            <td>{{ statistics.text_percent }}%</td>
+        </tr>
+        <tr>
+            <td>Error 7</td>
+            <td>{{ statistics.error7 }}/h</td>
+            <td></td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+
 <!-- Create save button -->
 {{ save_button_comment_start }}
-    <!-- Save button now in top-panel -->
+    <div style="max-width:{{ width }}px;">
+        <center><button id="saveButton">Save</button></center>
+    </div>
 {{ save_button_comment_stop }}
+
 
     <script>
         {% include "d3.v3.js" %}
@@ -176,12 +241,14 @@
 {{ slider_comment_start }}
 
     {% if max_slider > min_slider %}
-	<div style="max-width:{{ width }}px;" class="slider-container">
-        <form style="margin:0;">
-            <span class="slider-label">Edge Threshold</span>
-            <span class="slider-label">{{ min_slider }}</span>
-            <input type="range" autocomplete="off" id="thresholdSlider" value="{{ min_slider }}" min="{{ min_slider }}" max="{{ max_slider }}" class="styled-slider">
-            <span class="slider-label">{{ max_slider }}</span>
+	<div style="max-width:{{ width }}px;">
+        <form>
+            <h3>
+                Edge Threshold
+                {{ min_slider }}
+                <input type="range" autocomplete="off" id="thresholdSlider" value="{{ min_slider }}" min="{{ min_slider }}" max="{{ max_slider }}">
+                {{ max_slider }}
+            </h3>
         </form>
 	</div>
     {% endif %}
