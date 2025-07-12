@@ -13,8 +13,9 @@ import webbrowser
 from json import dumps
 from pathlib import Path
 from sys import platform
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory, gettempdir
 from unicodedata import normalize
+import uuid
 
 from community import community_louvain
 import colourmap as cm
@@ -27,6 +28,8 @@ from packaging import version
 import datazets as dz
 
 logger = logging.getLogger(__name__)
+if not logger.hasHandlers():
+    logging.basicConfig(level=logging.INFO, format='[{asctime}] [{name}] [{levelname}] {msg}', style='{', datefmt='%d-%m-%Y %H:%M:%S')
 
 
 # %%
@@ -100,12 +103,14 @@ class d3graph:
     def show(self,
              figsize=[1500, 800],
              title: str = 'd3graph',
-             filepath: str = 'd3graph.html',
+             filepath: str = None,
              showfig: bool = True,
              overwrite: bool = True,
              show_slider: bool = True,
              set_slider: bool = 0,
              click={'fill': None, 'stroke': 'black', 'size': 1.3, 'stroke-width': 3},
+             background_color = '#FFFFFF',
+             dark_mode = False,
              notebook: bool = False,
              save_button: bool = True,
              node_count: int = 0,
@@ -122,6 +127,9 @@ class d3graph:
             Title of the figure.
         filepath : String, (Default: user temp directory)
             File path to save the output
+            'd3graph.html': Write to the tempdir with d3graph.html
+            None: Write to tempdir with random html name
+            'c:/temp/my_d3graph.html': Writes to specific location.
         showfig : bool, (default: True)
             Open the window to show the network.
         overwrite : bool, (default: True)
@@ -137,6 +145,10 @@ class d3graph:
                 * {'fill': 'red', 'stroke': 'black', 'size': 1.3, 'stroke-width': 3}
                 * {'fill': None, 'stroke': '#FFF000', 'size': 2, 'stroke-width': 1}
                 * None : No action on click.
+        background_color : str, optional
+            The background color of the HTML page and SVG. Default is '#FFFFFF'.
+        dark_mode : bool, optional
+            If True, enables dark mode for the visualization. Default is False.
         notebook : bool
             True: Use IPython to show chart in notebooks.
             False: Do not use IPython.
@@ -168,9 +180,10 @@ class d3graph:
         self.config['save_button'] = save_button
         self.config['node_count'] = node_count
         self.config['link_count'] = link_count
-        # self.config['filepath'] = self.set_path(filepath)
-        if self.config.get('filepath', None)!='d3graph.html':
-            self.config['filepath'] = self.set_path(filepath)
+        self.config['background_color'] = background_color
+        self.config['dark_mode'] = dark_mode
+        # if self.config.get('filepath', None) != 'd3graph.html':
+        self.config['filepath'] = self.set_path(filepath)
 
         # Create dataframe from co-occurrence matrix
         self.G = make_graph(self.node_properties, self.edge_properties)
@@ -579,7 +592,9 @@ class d3graph:
         if color=='cluster':
             color = '#808080'
         # Set defaults
-        labx = {key: {'name': key, 'color': color, 'group': '-1'} for i, key in node_names}
+        labx = {
+            key: {'name': key, 'color': color, 'group': '-1'} for key in node_names
+        }
 
         df = adjmat2vec(self.adjmat.copy())
         G = nx.from_pandas_edgelist(df, edge_attr=True, create_using=nx.MultiGraph)
@@ -753,7 +768,9 @@ class d3graph:
                    'SUPPORT': self.config['support'],
                    'last_update': update,
                    'node_count': self.config['node_count'],
-                   'link_count': self.config['link_count']
+                   'link_count': self.config['link_count'],
+                   'background_color': self.config['background_color'],
+                   'dark_mode': self.config['dark_mode'],
                    }
 
         try:
@@ -778,13 +795,14 @@ class d3graph:
         # Return html
         return html
 
-    def set_path(self, filepath='d3graph.html') -> str:
+    def set_path(self, filepath=None) -> str:
         """Set the file path.
 
         Parameters
         ----------
         filepath : str
             filename and or full pathname.
+            * None → random HTML filename in /tmp/d3graph/
             * 'd3graph.html'
             * 'c://temp/'
             * 'c://temp/d3graph.html'
@@ -796,15 +814,17 @@ class d3graph:
 
         """
         if filepath is None:
-            return None
-
-        dirname, filename = os.path.split(filepath)
-
-        if filename in (None, ''):
-            filename = 'd3graph.html'
-
-        if dirname in (None, ''):
-            dirname = TemporaryDirectory().name
+            # return None
+            filename = f"{uuid.uuid4().hex[:8]}.html"
+            dirname = os.path.join(gettempdir(), 'd3graph')
+        else:
+            dirname, filename = os.path.split(filepath)
+    
+            if filename in (None, ''):
+                filename = 'd3graph.html'
+    
+            if dirname in (None, ''):
+                dirname = os.path.join(gettempdir(), 'd3graph')
 
         os.makedirs(dirname, exist_ok=True)
         filepath = os.path.abspath(os.path.join(dirname, filename))
