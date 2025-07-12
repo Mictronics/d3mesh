@@ -115,25 +115,7 @@ class d3graph:
              save_button: bool = True,
              node_count: int = 0,
              link_count: int = 0,
-             statistics = {
-                 'device': 0,
-                 'environment': 0,
-                 'power': 0,
-                 'traceroute': 0,
-                 'routing': 0,
-                 'position': 0,
-                 'nodinfo': 0,
-                 'text': 0,
-                 'error7': 0,
-                 'device_percent': 0,
-                 'environment_percent': 0,
-                 'power_percent': 0,
-                 'traceroute_percent': 0,
-                 'routing_percent': 0,
-                 'position_percent': 0,
-                 'nodinfo_percent': 0,
-                 'text_percent': 0,
-                },
+             statistics = None
              ) -> None:
         """Build and show the graph.
 
@@ -189,6 +171,35 @@ class d3graph:
         if not hasattr(self, 'edge_properties') or not hasattr(self, 'node_properties'):
             logger.warning('No graph detected. <return> Hint: "d3.graph(df)"')
             return None
+
+        if statistics is None:
+            statistics = {
+                 'device': 0,
+                 'environment': 0,
+                 'power': 0,
+                 'host': 0,
+                 'storefwd': 0,
+                 'ext_notification': 0,
+                 'traceroute': 0,
+                 'routing': 0,
+                 'position': 0,
+                 'nodinfo': 0,
+                 'text': 0,
+                 'admin': 0,
+                 'error7': 0,
+                 'device_percent': 0,
+                 'environment_percent': 0,
+                 'power_percent': 0,
+                 'traceroute_percent': 0,
+                 'routing_percent': 0,
+                 'position_percent': 0,
+                 'nodinfo_percent': 0,
+                 'text_percent': 0,
+                 'host_percent': 0,
+                 'storefwd_percent': 0,
+                 'ext_notification_percent': 0,
+                 'admin_percent': 0,
+                }
 
         self.config['figsize'] = figsize
         self.config['network_title'] = title
@@ -1034,7 +1045,7 @@ def json_create(G: nx.Graph) -> str:
     # Set node properties
     nodes = pd.DataFrame([*G.nodes.values()]).T.to_dict()
     nodes_new = [None] * len(nodes)
-    for i in enumerate(nodes):
+    for i, node in enumerate(nodes):
         nodes[i]['node_name'] = nodes[i].pop('label')
         nodes[i]['node_marker'] = nodes[i].pop('marker')
         # nodes[i]['node_label'] = nodes[i].pop('label')
